@@ -2,7 +2,123 @@
 
 
 {% block body %}
+
+
+
     {% for faculty in faculties %}
+        <div class="card text-right">
+            <div class="card-header">
+                <h3>
+                    {{ faculty.name }}
+                </h3>
+                <a href="" class="btn btn-primary"></a>
+                <a href="" class="btn btn-primary"></a>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>واحد های ارایه شده</th>
+                        <th>کلاس ها</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div id="accordion-{{ faculty.id }}">
+                                {% for course in faculty.course.all %}
+
+                                    <div class="card">
+                                        <div class="card-header" id="{{ course.id }}">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-link" data-toggle="collapse"
+                                                        data-target="#collapse-{{ course.id }}" aria-expanded="true"
+                                                        aria-controls="collapse-{{ course.id }}">
+                                                    {{ course.name }}
+                                                </button>
+                                                <a href="{% url 'course' course.id %}" class="btn btn-primary">اطلاعات
+                                                    بیشتر</a>
+                                            </h5>
+                                        </div>
+
+                                        <div id="collapse-{{ course.id }}" class="collapse"
+                                             aria-labelledby="{{ course.id }}"
+                                             data-parent="#accordion-{{ faculty.id }}">
+                                            <div class="card-body">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>واحد</th>
+                                                        <th>تبت نام شده</th>
+                                                        <th>استاد</th>
+                                                        <th>کلاس</th>
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{{ course.unit }}</td>
+                                                        <td>{{ course.students.count }}</td>
+                                                        <td>{{ course.teacher.last_name }}</td>
+                                                        <td>
+                                                            {% for class in course.classroom.all %}
+                                                                {{ class.name }}
+                                                            {% endfor %}
+
+                                                        </td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </td>
+                        <td>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>نام کلاس</th>
+                                    <th>ظرفیت</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for class in faculty.classroom_faculty.all %}
+                                    <tr>
+                                        <td>{{ class.name }}</td>
+                                        <td>{{ class.capacity }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+
+
+        </div>
+    {% endfor %}
+
+
+
+
+
+
+
+
+
+
+    {% comment %}    {% for faculty in faculties %}
         <h1 class="text-right">{{ faculty.name }}</h1>
         <table class="table">
             <thead>
@@ -41,6 +157,6 @@
             {% endfor %}
             </tbody>
         </table>
-    {% endfor %}
+    {% endfor %}{% endcomment %}
 
 {% endblock %}

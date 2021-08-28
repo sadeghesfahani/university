@@ -45,7 +45,7 @@ def course(request, id):
         except Course.DoesNotExist:
             error = "there no such a course"
         try:
-            exclude_students = Student.objects.exclude(student_course=course)
+            exclude_students = Student.objects.filter(faculty=course.faculty).exclude(student_course=course)
         except Student.DoesNotExist:
             error = "there is no excluded students"
             exclude_students = None
@@ -58,7 +58,7 @@ def course(request, id):
             course = Course.objects.get(id=id)
         except Course.DoesNotExist:
             course = None
-        exclude_students = Student.objects.exclude(student_course=course)
+        exclude_students = Student.objects.filter(faculty=course.faculty).exclude(student_course=course)
         return render(request, "university/course.html", {"course": course, "students": exclude_students})
 
 

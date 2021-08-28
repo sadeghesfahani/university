@@ -62,7 +62,7 @@ class Student(User):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.last_name} - {self.student_id}"
+        return f"{self.last_name} - {self.student_id} - {self.faculty.name}"
 
 
 class Staff(User):
@@ -73,12 +73,22 @@ class Staff(User):
         return f"{self.first_name} - {self.personal_id}"
 
 
+class ClassRoom(models.Model):
+    name = models.CharField(max_length=60)
+    capacity = models.SmallIntegerField()
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name="classroom_faculty")
+
+    def __str__(self):
+        return f"{self.name} - {self.capacity}"
+
+
 class Course(models.Model):
     name = models.CharField(max_length=150)
-    unit = models.SmallIntegerField(blank=False, null=False,default=1)
+    unit = models.SmallIntegerField(blank=False, null=False, default=1)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='course')
     students = models.ManyToManyField(Student, related_name='student_course')
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, blank=True, null=True)
+    classroom = models.ManyToManyField(ClassRoom, related_name='classroom_course')
 
     def __str__(self):
         return f"{self.name}"
