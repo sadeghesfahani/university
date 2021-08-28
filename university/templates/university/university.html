@@ -1,0 +1,46 @@
+{% extends 'university/layout.html' %}
+
+
+{% block body %}
+    {% for faculty in faculties %}
+        <h1 class="text-right">{{ faculty.name }}</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>نام</th>
+                <th>نام خنوادگی</th>
+                <th>شماره دنشجویی</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student in faculty.student_set.all %}
+                <tr>
+                    <td><a href="{% url 'student' student.id %}">{{ student.first_name }}</a> </td>
+                    <td><a href="{% url 'student' student.id %}">{{ student.last_name }} </a> </td>
+                    <td><a href="{% url 'student' student.id %}">{{ student.student_id }}</a> </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <h3 class="text-right">دروس ارایه شده در این ترم</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>نام</th>
+                <th>واحد</th>
+                <th>استاد</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in faculty.course.all %}
+                <tr>
+                    <td><a href="{% url 'course' course.id %}">{{ course.name }}</a> </td>
+                    <td><a href="{% url 'course' course.id %}">{{ course.unit }} </a> </td>
+                    <td><a href="{% url 'course' course.id %}">{{ course.teacher }}</a> </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+{% endblock %}

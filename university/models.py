@@ -34,32 +34,8 @@ def generateStudentPersonalId():
         generateStudentPersonalId()
 
 
-class Staff(User):
-    personal_id = models.IntegerField(unique=True, default=generateStaffPersonalId)
-
-    def __str__(self):
-        return f"{self.first_name} - {self.personal_id}"
-
-
-class Teacher(User):
-    personal_id = models.IntegerField(unique=True, default=generateTeacherPersonalId)
-
-    def __str__(self):
-        return f"{self.first_name} - {self.personal_id}"
-
-
-class Student(User):
-    student_id = models.IntegerField(unique=True, default=generateStudentPersonalId)
-
-    def __str__(self):
-        return f"{self.first_name} - {self.student_id}"
-
-
 class University(models.Model):
     name = models.CharField(max_length=100)
-    staff = models.ManyToManyField(Staff, blank=True, null=True)
-    students = models.ManyToManyField(Student, blank=True, null=True)
-    teachers = models.ManyToManyField(Teacher, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -68,19 +44,41 @@ class University(models.Model):
 class Faculty(models.Model):
     name = models.CharField(max_length=100)
     university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='faculty')
-    staff = models.ManyToManyField(Staff, blank=True, null=True)
-    students = models.ManyToManyField(Student, blank=True, null=True)
-    teachers = models.ManyToManyField(Teacher, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.university.name} - {self.name}"
+
+
+class Teacher(User):
+    personal_id = models.IntegerField(unique=True, default=generateTeacherPersonalId)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.first_name} - {self.personal_id}"
+
+
+class Student(User):
+    student_id = models.IntegerField(unique=True, default=generateStudentPersonalId)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.last_name} - {self.student_id}"
+
+
+class Staff(User):
+    personal_id = models.IntegerField(unique=True, default=generateStaffPersonalId)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.first_name} - {self.personal_id}"
 
 
 class Course(models.Model):
     name = models.CharField(max_length=150)
+    unit = models.SmallIntegerField(blank=False, null=False,default=1)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='course')
-    students = models.ManyToManyField(Student, blank=True, null=True)
-    teachers = models.ManyToManyField(Staff, blank=True, null=True)
+    students = models.ManyToManyField(Student, related_name='student_course')
+    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name}"

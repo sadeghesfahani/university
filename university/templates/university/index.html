@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-here we are
-</body>
-</html>
+{% extends 'university/layout.html' %}
+
+
+{% block body %}
+
+    {% for university in universities %}
+    <a href="{% url 'university' university.id %}">{{ university }}</a>
+    {% endfor %}
+{% endblock %}
