@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.db import models
 import random
 
-
 # Create your models here.
+from django.db.models import Sum
 
 
 def generateStaffPersonalId():
@@ -43,7 +43,7 @@ class University(models.Model):
 
 class Faculty(models.Model):
     name = models.CharField(max_length=100)
-    university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='faculty')
+    university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='university_faculty')
 
     def __str__(self):
         return f"{self.university.name} - {self.name}"
@@ -60,6 +60,10 @@ class Teacher(User):
 class Student(User):
     student_id = models.IntegerField(unique=True, default=generateStudentPersonalId)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+
+    @property
+    def units(self):
+        return self.student_course.all().aggregate(Sum('unit'))['unit__sum']
 
     def __str__(self):
         return f"{self.last_name} - {self.student_id} - {self.faculty.name}"

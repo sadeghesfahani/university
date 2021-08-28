@@ -1,7 +1,9 @@
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .form import StudentForm
 from .models import *
 
 
@@ -67,8 +69,36 @@ def delete_course(request, student_id, course_id):
         course = Course.objects.get(id=course_id)
         student = Student.objects.get(id=student_id)
         course.students.remove(student)
-        return HttpResponseRedirect(reverse('course', args= (course_id,)))
+        return HttpResponseRedirect(reverse('course', args=(course_id,)))
     except Course.DoesNotExist:
         error = "there is no such a course"
     except Student.DoesNotExist:
         error = "there is no such a student"
+
+
+def add_student(request, faculty_id):
+    global faculty
+    student_form = StudentForm()
+    try:
+        faculty = Faculty.objects.get(id=faculty_id)
+        students = Student.objects.filter(faculty=faculty)
+
+    except Faculty.DoesNotExist:
+        students = None
+    if request.method == "GET":
+        return render(request, 'university/add_student.html',
+                      {"students": students, 'form': student_form, "faculty": faculty})
+
+    else:
+        student_form = StudentForm(request.POST)
+        if student_form.is_valid():
+            print("it's validated")
+            new_student = student_form.save(commit=False)
+            new_student.faculty = faculty
+            new_student.save()
+            student_form = StudentForm()
+            return render(request, 'university/add_student.html',
+                          {"students": students, 'form': student_form, "faculty": faculty})
+        else:
+            return render(request, 'university/add_student.html',
+                          {"students": students, "faculty": faculty, "form": student_form})

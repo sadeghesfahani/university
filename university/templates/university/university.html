@@ -8,11 +8,11 @@
     {% for faculty in faculties %}
         <div class="card text-right">
             <div class="card-header">
-                <h3>
+                <h3 style="display: inline-flex">
                     {{ faculty.name }}
                 </h3>
-                <a href="" class="btn btn-primary"></a>
-                <a href="" class="btn btn-primary"></a>
+                <a href="" class="btn btn-primary float-left m-2">افزودن درس</a>
+                <a href="{% url 'add_student' faculty_id=faculty.id %}" class="btn btn-primary float-left m-2">افزودن دانشجو</a>
             </div>
             <div class="card-body">
                 <table class="table">

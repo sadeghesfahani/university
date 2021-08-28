@@ -1,0 +1,56 @@
+{% extends 'university/layout.html' %}
+{% block style %}
+    input{
+    display:inline-flex;
+    flex:1;
+    }
+{% endblock %}
+{% block body %}
+<div class="card">
+<div class="card-header text-right"><h1> {{ faculty.name }}</h1></div>
+<div class="card-body">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>نام</th>
+            <th>نام خانوادگی</th>
+            <th>شماره دانشچویی</th>
+            <th>تعداد واحد</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+
+            <tr>
+                <th>{{ student.first_name }}</th>
+                <th>{{ student.last_name }}</th>
+                <th>{{ student.student_id }}</th>
+                <th>{{ student.units }}</th>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <form action="" class="text-right" method="post">
+    {% csrf_token %}
+        <table class="table">
+            {% for foo in form %}
+                <tr>
+                    <td><label class="" style="" for="{{ foo.id_for_label }}">{{ foo.label_tag }}</label></td>
+                    <td>{{ foo }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    <div class="row text-center">
+        <div class="col">
+        <input type="submit" class="btn btn-primary " value="اضافه کن">
+            </div>
+    </div>
+
+    </form>
+
+
+</div>
+</div>
+{% endblock %}
