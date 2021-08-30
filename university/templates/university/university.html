@@ -11,15 +11,17 @@
                 <h3 style="display: inline-flex">
                     {{ faculty.name }}
                 </h3>
-                <a href="" class="btn btn-primary float-left m-2">افزودن درس</a>
+                <a href="{% url 'add_course' faculty_id=faculty.id %}" class="btn btn-primary float-left m-2">افزودن درس</a>
                 <a href="{% url 'add_student' faculty_id=faculty.id %}" class="btn btn-primary float-left m-2">افزودن دانشجو</a>
+                <a href="{% url 'add_student' faculty_id=faculty.id %}" class="btn btn-primary float-left m-2">افزودن استاد</a>
+                <a href="{% url 'add_student' faculty_id=faculty.id %}" class="btn btn-primary float-left m-2">افزودن کلاس</a>
             </div>
             <div class="card-body">
                 <table class="table">
                     <thead>
                     <tr>
                         <th>واحد های ارایه شده</th>
-                        <th>کلاس ها</th>
+                        <th>اطلاعات دانشکده</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -81,17 +83,19 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>نام کلاس</th>
-                                    <th>ظرفیت</th>
+                                    <th>تعداد کلاس</th>
+                                    <th>تعداد دانشجو</th>
+                                    <th>تعداد استاد</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for class in faculty.classroom_faculty.all %}
+
                                     <tr>
-                                        <td>{{ class.name }}</td>
-                                        <td>{{ class.capacity }}</td>
+                                        <td>{{ faculty.classroom_number }}</td>
+                                        <td>{{ faculty.students_number}}</td>
+                                        <td>{{ faculty.teachers_number}}</td>
                                     </tr>
-                                {% endfor %}
+
 
 
                                 </tbody>

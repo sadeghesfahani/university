@@ -2,8 +2,14 @@
 
 
 {% block body %}
-
+{% if user.is_authenticated %}
+    user.student_id
     {% for university in universities %}
     <a href="{% url 'university' university.id %}">{{ university }}</a>
     {% endfor %}
+
+{% else %}
+
+{% endif %} 
+
 {% endblock %}

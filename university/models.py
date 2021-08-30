@@ -45,6 +45,18 @@ class Faculty(models.Model):
     name = models.CharField(max_length=100)
     university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='university_faculty')
 
+    @property
+    def classroom_number(self):
+        return self.classroom_faculty.all().count()
+
+    @property
+    def students_number(self):
+        return self.student_set.count()
+
+    @property
+    def teachers_number(self):
+        return self.teacher_set.count()
+
     def __str__(self):
         return f"{self.university.name} - {self.name}"
 
@@ -59,12 +71,16 @@ class Teacher(User):
 
 class Student(User):
     student_id = models.IntegerField(unique=True, default=generateStudentPersonalId)
-    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE,related_name='faculty_student')
 
     @property
     def units(self):
         return self.student_course.all().aggregate(Sum('unit'))['unit__sum']
 
+    def save(self):
+        super(Student, self).save()
+        
+        
     def __str__(self):
         return f"{self.last_name} - {self.student_id} - {self.faculty.name}"
 
@@ -87,12 +103,24 @@ class ClassRoom(models.Model):
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=150)
-    unit = models.SmallIntegerField(blank=False, null=False, default=1)
+    name = models.CharField(max_length=150,verbose_name="نام درس")
+    unit = models.SmallIntegerField(blank=False, null=False, default=1,verbose_name='تعداد واحد')
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='course')
     students = models.ManyToManyField(Student, related_name='student_course')
-    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, blank=True, null=True)
-    classroom = models.ManyToManyField(ClassRoom, related_name='classroom_course')
+    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, blank=True, null=True,verbose_name='استاد')
+    classroom = models.ManyToManyField(ClassRoom, related_name='classroom_course',verbose_name='کلاس')
 
     def __str__(self):
         return f"{self.name}"
+
+
+
+
+
+
+
+
+
+
+
+
