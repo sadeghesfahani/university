@@ -51,7 +51,9 @@ class Faculty(models.Model):
 
     @property
     def students_number(self):
-        return self.student_set.count()
+        # self.studen
+        return self.faculty_student.count()
+
 
     @property
     def teachers_number(self):

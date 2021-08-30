@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .form import StudentForm, CourseForm, TeacherForm, UserForm
 from .models import *
 
@@ -161,6 +161,28 @@ def login_form(request):
 
 
 def choose(request):
-    faculty = Student.objects.get(username=request.user.username).faculty
-    courses = Course.objects.filter(faculty=faculty)
-    return render(request, 'university/choose.html', {"faculty": faculty, "courses": courses})
+    if request.user.is_authenticated:
+        user = Student.objects.get(username=request.user.username)
+        faculty = user.faculty
+        if request.method == "POST":
+            course_to_remove_student_from = Course.objects.get(id=request.POST['selected_course'])
+            course_to_remove_student_from.students.add(user)
+        courses_to_take = Course.objects.filter(faculty=faculty).exclude(students__username__contains=user.username)
+        curses_has_taken = user.student_course.all()
+        return render(request, 'university/choose.html',
+                      {"faculty": faculty, "courses_to_take": courses_to_take, "user": user,
+                       "curses_has_taken": curses_has_taken})
+    else:
+        return HttpResponseRedirect(reverse('index'))
+
+
+def delete_course_panel(request, user_id, course_id):
+    course = Course.objects.get(id=course_id)
+    user = User.objects.get(id=user_id)
+    course.students.remove(user)
+    return HttpResponseRedirect(reverse('choose'))
+
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))

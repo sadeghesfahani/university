@@ -1,11 +1,42 @@
 {% extends 'university/layout.html' %}
 
 {% block body %}
+    <a href="{% url 'index' %}" class="btn btn-primary">خانه</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>درس</th>
+            <th>واحد</th>
+            <th>استاد</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for course in curses_has_taken %}
+            <tr>
+                <td>{{ course.name }}</td>
+                <td>{{ course.unit }}</td>
+                <td>{{ course.teacher }}</td>
+                <td><a href="{% url 'delete_course_panel' user_id=user.id course_id=course.id %}"
+                       class="btn btn-primary">حذف</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-{% for cours in courses %}
-{{ cours }} <br>
-{% endfor %}
+
+    <form action="" method="post" class="text-center">
+    {% csrf_token %}
+        <label for="courses">انتخاب درس</label>
+        <select name="selected_course" id="courses">
+
+            {% for course in courses_to_take %}
+                <option value="{{ course.id }}">{{ course.name }}</option>
+            {% endfor %}
 
 
+    </select>
+        <input type="submit" value="انتخاب" class="btn btn-primary">
+    </form>
 
 {% endblock %}

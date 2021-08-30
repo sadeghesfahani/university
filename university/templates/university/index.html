@@ -3,13 +3,13 @@
 
 {% block body %}
 {% if user.is_authenticated %}
-    user.student_id
     {% for university in universities %}
     <a href="{% url 'university' university.id %}">{{ university }}</a>
     {% endfor %}
-
+    <a href="{% url 'choose' %}" class="btn btn-primary">انتخاب واحد</a>
+<a href="{% url 'logout' %}" class="btn btn-primary">خروج</a>
 {% else %}
-
+    <a href="{% url 'login' %}" class="btn btn-primary">ورود</a>
 {% endif %} 
 
 {% endblock %}
